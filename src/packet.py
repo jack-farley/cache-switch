@@ -1,4 +1,4 @@
-from ipaddress import ip_interface, IPv4Address
+from ipaddress import IPv4Address
 
 
 class Packet:

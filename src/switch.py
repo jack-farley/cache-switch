@@ -1,3 +1,9 @@
+from sortedcontainers import SortedDict
+
 
 class Switch:
-    pass
+
+    rules: SortedDict
+
+    def __init__(self):
+        self.rules = SortedDict()
