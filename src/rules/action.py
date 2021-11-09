@@ -6,6 +6,7 @@ class ActionType (Enum):
     FORWARD = 1
     CONTROLLER = 2
     MODIFY_HEADER = 3
+    SOFTWARE_SWITCH = 4
 
 
 class Action:
@@ -35,3 +36,12 @@ class ControllerAction (Action):
 
     def __init__(self):
         super(ActionType.CONTROLLER)
+
+
+class SoftwareSwitchAction (Action):
+
+    sw_switch_id: int
+
+    def __init__(self, sw_switch_id: int):
+        super(ActionType.SOFTWARE_SWITCH)
+        self.sw_switch_id = sw_switch_id

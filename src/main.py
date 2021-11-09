@@ -1,7 +1,12 @@
+from switch.cache_switch import CacheSwitch
+
 
 def main():
-  pass
+
+    switch = CacheSwitch()
+
+    pass
 
 
 if __name__ == "__main__":
-  main()
+    main()
