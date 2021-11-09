@@ -1,4 +1,4 @@
-from switch import Switch
+from switches.switch import Switch
 from rules.rule import Rule
 from rules.action import Action, ActionType
 from packet import Packet

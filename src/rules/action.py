@@ -20,7 +20,7 @@ class Action:
 class DropAction (Action):
 
     def __init__(self):
-        super(ActionType.DROP)
+        super().__init__(ActionType.DROP)
 
 
 class ForwardAction (Action):
@@ -29,13 +29,13 @@ class ForwardAction (Action):
 
     def __init__(self, forward_port: int):
         self.forward_port = forward_port
-        super(ActionType.FORWARD)
+        super().__init__(ActionType.FORWARD)
 
 
 class ControllerAction (Action):
 
     def __init__(self):
-        super(ActionType.CONTROLLER)
+        super().__init__(ActionType.CONTROLLER)
 
 
 class SoftwareSwitchAction (Action):
@@ -43,5 +43,5 @@ class SoftwareSwitchAction (Action):
     sw_switch_id: int
 
     def __init__(self, sw_switch_id: int):
-        super(ActionType.SOFTWARE_SWITCH)
+        super().__init__(ActionType.SOFTWARE_SWITCH)
         self.sw_switch_id = sw_switch_id

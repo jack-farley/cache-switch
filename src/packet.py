@@ -1,12 +1,12 @@
-from ipaddress import IPv4Address
+from ipaddress import IPv4Network
 
 
 class Packet:
 
     in_port: int
 
-    ipv4_src: IPv4Address
-    ipv4_dst: IPv4Address
+    ipv4_src: IPv4Network
+    ipv4_dst: IPv4Network
 
     tcp_sport: int
     tcp_dport: int
@@ -14,8 +14,8 @@ class Packet:
     def __init__(
         self,
         in_port: int,
-        ipv4_src: IPv4Address,
-        ipv4_dst: IPv4Address,
+        ipv4_src: IPv4Network,
+        ipv4_dst: IPv4Network,
         tcp_sport: int,
         tcp_dport: int
     ):

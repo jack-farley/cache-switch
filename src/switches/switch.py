@@ -1,8 +1,7 @@
-from sortedcontainers import SortedKeyList
 from rules.rule import Rule
 from packet import Packet
 from rules.action import Action
-from table import Table
+from switches.table import Table
 
 
 class Switch:

@@ -27,8 +27,8 @@ class Table:
         """
         action: Action = None
         for rule in self.rules.__reversed__():
-            if rule.macthes(packet):
-                action = rule.action()
+            if rule.matches(packet):
+                action = rule.action
                 break
 
         return action
