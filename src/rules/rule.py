@@ -1,13 +1,13 @@
 from enum import Enum
 
 from rules.action import Action
-from rules.pattern import Pattern
+from rules.rule import Rule
 from packet import Packet
 
 
 class Rule:
 
-    patters = []
+    patterns = []
     action: Action
     priority: int
 
@@ -24,3 +24,10 @@ class Rule:
 
     def action(self) -> Action:
         return self.action
+
+    def intersects(self, rule: Rule) -> bool:
+        for pattern_1 in self.patterns:
+            for pattern_2 in rule.patterns:
+                if not pattern_1.intersects(pattern_2):
+                    return False
+        return True

@@ -1,3 +1,4 @@
+from sortedcontainers import SortedKeyList
 from switches.switch import Switch
 from rules.rule import Rule
 from rules.action import Action, ActionType
@@ -10,6 +11,8 @@ class CacheSwitch:
     hw_switch_size: int
     sw_switches: list
 
+    all_rules: SortedKeyList
+
     def __init__(self, num_sw_switches: int, hw_switch_size: int):
         """Create a new cache switch."""
         self.hw_switch = Switch()
@@ -17,6 +20,25 @@ class CacheSwitch:
         self.sw_switches = []
         for i in range(num_sw_switches):
             self.sw_switches.append(Switch())
+
+        self.all_rules = SortedKeyList([], key=lambda r: r.priority)
+
+    def update(self):
+        """Update the rules in the hardware and software switches."""
+
+        # get a list of dependencies
+        dependency_graph = []
+        for i in range(len(self.all_rules)):
+            dependencies = []
+            for j in range(i + 1, len(self.all_rules)):
+                # check if j is dependent on i
+                for prev_dependency in dependencies:
+                    if self.all_rules[j].intersects(self.all_rules[prev_dependency]):
+                        dependencies.append(j)
+            dependency_graph.append(dependencies)
+
+        # cache rules
+        # [TODO]
 
     def packet_in(self, packet: Packet, port: int) -> Action:
         """Send a packet into the switch on the given port."""
