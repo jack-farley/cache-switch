@@ -1,25 +1,22 @@
 from sortedcontainers import SortedKeyList
 from switches.switch import Switch
+from switches.basic_switch import BasicSwitch
 from rules.rule import Rule
 from rules.action import Action, ActionType
 from packet import Packet
 
 
-class CacheSwitch:
+class CacheSwitch (Switch):
 
-    hw_switch: Switch
+    hw_switch: BasicSwitch
     hw_switch_size: int
-    sw_switches: list
 
     all_rules: SortedKeyList
 
-    def __init__(self, num_sw_switches: int, hw_switch_size: int):
+    def __init__(self, hw_switch_size: int):
         """Create a new cache switch."""
-        self.hw_switch = Switch()
+        self.hw_switch = BasicSwitch()
         self.hw_switch_size = hw_switch_size
-        self.sw_switches = []
-        for i in range(num_sw_switches):
-            self.sw_switches.append(Switch())
 
         self.all_rules = SortedKeyList([], key=lambda r: r.priority)
 
