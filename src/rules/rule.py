@@ -11,10 +11,13 @@ class Rule:
     action: Action
     priority: int
 
+    counter: int
+
     def __init__(self, patterns, action: Action, priority: int):
         self.patterns = patterns
         self.action = action
         self.priority = priority
+        self.counter = 0
 
     def matches(self, packet: Packet) -> bool:
         for pattern in self.patterns:
@@ -31,3 +34,6 @@ class Rule:
                 if not pattern_1.intersects(pattern_2):
                     return False
         return True
+
+    def increment_counter(self):
+        self.counter += 1

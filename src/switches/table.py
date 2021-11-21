@@ -29,6 +29,7 @@ class Table:
         for rule in self.rules.__reversed__():
             if rule.matches(packet):
                 action = rule.action
+                rule.increment_counter()
                 break
 
         return action
