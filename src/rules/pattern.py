@@ -1,6 +1,5 @@
 from ipaddress import IPv4Network
 from packet import Packet
-from rules.pattern import Pattern
 
 
 class Pattern:
@@ -9,7 +8,7 @@ class Pattern:
         """Returns whether or not the packet matches this rule."""
         pass
 
-    def intersects(self, pattern: Pattern) -> bool:
+    def intersects(self, pattern) -> bool:
         """Returns whether this pattern intersects another specified pattern."""
         pass
 
