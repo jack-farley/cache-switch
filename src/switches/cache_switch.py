@@ -11,12 +11,16 @@ class CacheSwitch (Switch):
     hw_switch: BasicSwitch
     hw_switch_size: int
 
+    sw_switch: BasicSwitch
+
     all_rules: SortedKeyList
 
     def __init__(self, hw_switch_size: int):
         """Create a new cache switch."""
         self.hw_switch = BasicSwitch()
         self.hw_switch_size = hw_switch_size
+
+        self.sw_switch = BasicSwitch()
 
         # ascending order of priority - iterate in reverse
         self.all_rules = SortedKeyList([], key=lambda r: r.priority)
@@ -101,27 +105,36 @@ class CacheSwitch (Switch):
             weight += weight_to_add
 
         # update the caches
+        new_cache_rules = {}
+        for ind in cached_rules:
+            new_cache_rules.add(self.all_rules[ind])
+
+        self.hw_switch.set_rules(new_cache_rules)
 
     def packet_in(self, packet: Packet, port: int) -> Action:
-        """Send a packet into the switch on the given port."""
         packet.in_port = port
 
         # check if the packet matches in the hardware switch
-        action = self.hw_switch.packet_in(packet)
+        action = self.sw_switch.packet_in(packet)
 
         # check if we need to go to a software switch
-        if action.type == ActionType.SOFTWARE_SWITCH:
-            action = self.sw_switches[action.sw_switch_id].packet_in(
-                packet)
+        if action == None or action.type == ActionType.SOFTWARE_SWITCH:
+            action = self.sw_switch.packet_in(packet)
 
         return action
 
     def add_rule(self, rule: Rule):
-        """Add a rule to this switch."""
-        self.hw_switch.add_rule(rule)
-        pass
+        self.all_rules.add(rule)
+        self.sw_switch.add_rule(rule)
+
+        self.update()
 
     def remove_rule(self, rule: Rule):
-        """Remove a rule from this switch."""
-        self.hw_switch.remove_rule(rule)
+        self.all_rules.add(rule)
+        self.sw_switch.remove_rule(rule)
+
+        self.update()
+
+    def set_rules(self, rules: set):
+        # [TODO]
         pass
