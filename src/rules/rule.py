@@ -1,6 +1,6 @@
 from enum import Enum
 
-from rules.action import Action
+from rules.action import Action, ActionType, SoftwareSwitchAction
 from packet import Packet
 
 
@@ -36,3 +36,6 @@ class Rule:
 
     def increment_counter(self):
         self.counter += 1
+
+    def create_cover_rule(self):
+        return Rule(self.patterns, SoftwareSwitchAction(), self.priority)

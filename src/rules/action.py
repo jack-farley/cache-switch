@@ -40,8 +40,5 @@ class ControllerAction (Action):
 
 class SoftwareSwitchAction (Action):
 
-    sw_switch_id: int
-
-    def __init__(self, sw_switch_id: int):
+    def __init__(self):
         super().__init__(ActionType.SOFTWARE_SWITCH)
-        self.sw_switch_id = sw_switch_id

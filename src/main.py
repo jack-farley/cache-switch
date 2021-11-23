@@ -40,6 +40,9 @@ def main():
     print(response_action.type)
     print(response_action.forward_port)
 
+    print("Pakcets: " + str(switch.num_packets))
+    print("Misses: " + str(switch.num_misses))
+
 
 if __name__ == "__main__":
     main()
