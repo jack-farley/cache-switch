@@ -161,6 +161,7 @@ class CacheSwitch (Switch):
 
         while len(cached_rules) + len(cover_rules) < self.hw_switch_size:
             to_add_cached = set()
+            to_remove_cover = set()
             to_add_cover = set()
             weight_to_add = 0
 
@@ -168,16 +169,29 @@ class CacheSwitch (Switch):
                 if i not in cached_rules and weights[i] > weight_to_add:
                     # create the cover set
                     possible_to_add_cached = set()
+                    possible_to_remove_cover = set()
                     possible_to_add_cover = set()
 
                     possible_to_add_cached.add(i)
+                    if i in cover_rules:
+                        possible_to_remove_cover.add(i)
                     possible_to_add_cover.update(dependency_graph[i])
 
+                    if len(cached_rules) + len(cover_rules) + len(possible_to_add_cached) \
+                        - len(possible_to_remove_cover) + len(possible_to_add_cover) \
+                            > self.hw_switch_size:
+                        continue
+
                     to_add_cached = possible_to_add_cached
+                    to_remove_cover = possible_to_remove_cover
                     to_add_cover = possible_to_add_cover
                     weight_to_add = weights[i]
 
+            if weight_to_add == 0:
+                break
+
             cached_rules.update(to_add_cached)
+            cover_rules.difference_update(to_remove_cover)
             cover_rules.update(to_add_cover)
             weight += weight_to_add
 
@@ -205,8 +219,92 @@ class CacheSwitch (Switch):
         weights = self._get_weights()
 
         # Cache rules using mixed-set algorithm
-        # [TODO]
-        pass
+        cached_rules = set()
+        cover_rules = set()
+        weight = 0
+
+        while len(cached_rules) + len(cover_rules) < self.hw_switch_size:
+            to_add_cached = set()
+            to_remove_cover = set()
+            to_add_cover = set()
+            weight_to_add = 0
+            ratio = 0
+
+            for i in range(len(self.all_rules)):
+
+                # dependent set part
+                if i not in cached_rules:
+                    # create dependent set
+                    possible_to_add_cached = {i}
+                    possible_to_remove_cover = set()
+                    if i in cover_rules:
+                        possible_to_remove_cover.add(i)
+                    possible_to_add_cover = set()
+                    possible_weight_to_add = weights[i]
+
+                    for j in all_dependencies[i]:
+                        if j not in cached_rules:
+                            possible_to_add_cached.add(j)
+                            if j in cover_rules:
+                                possible_to_remove_cover.add(j)
+                            possible_weight_to_add += weights[j]
+
+                    # make sure we havent exceeded the cost
+                    if len(cached_rules) + len(cover_rules) + len(possible_to_add_cached) - len(possible_to_remove_cover) + len(possible_to_add_cover) > self.hw_switch_size:
+                        continue
+
+                    new_ratio = (weight + possible_weight_to_add) / (len(cached_rules) + len(cover_rules) + len(
+                        possible_to_add_cached) + len(possible_to_add_cover) - len(possible_to_remove_cover))
+
+                    if new_ratio > ratio:
+                        to_add_cached = possible_to_add_cached
+                        to_remove_cover = possible_to_remove_cover
+                        to_add_cover = possible_to_add_cover
+                        weight_to_add = possible_weight_to_add
+                        ratio = new_ratio
+
+                # cover set part
+                if i not in cached_rules:
+                    # create the cover set
+                    possible_to_add_cached = set()
+                    possible_to_remove_cover = set()
+                    possible_to_add_cover = set()
+                    possible_weight_to_add = weights[i]
+
+                    possible_to_add_cached.add(i)
+                    if i in cover_rules:
+                        possible_to_remove_cover.add(i)
+                    possible_to_add_cover.update(dependency_graph[i])
+
+                    # make sure we havent exceeded the cost
+                    if len(cached_rules) + len(cover_rules) + len(possible_to_add_cached) - len(possible_to_remove_cover) + len(possible_to_add_cover) > self.hw_switch_size:
+                        continue
+
+                    new_ratio = (weight + possible_weight_to_add) / (len(cached_rules) + len(cover_rules) + len(
+                        possible_to_add_cached) + len(possible_to_add_cover) - len(possible_to_remove_cover))
+
+                    if new_ratio > ratio:
+                        to_add_cached = possible_to_add_cached
+                        to_remove_cover = possible_to_remove_cover
+                        to_add_cover = possible_to_add_cover
+                        weight_to_add = possible_weight_to_add
+                        ratio = new_ratio
+
+            if ratio == 0:
+                break
+
+            cached_rules.update(to_add_cached)
+            cover_rules.difference_update(to_remove_cover)
+            cover_rules.update(to_add_cover)
+            weight += weight_to_add
+
+        new_cache_rules = set()
+        for ind in cached_rules:
+            new_cache_rules.add(self.all_rules[ind])
+        for ind in cover_rules:
+            cover_rules.add(self.all_rules[ind].create_cover_rule())
+
+        self.hw_switch.set_rules(new_cache_rules)
 
     def _update_cache(self):
         # [TODO] Add ability to use other cache algorithms.
