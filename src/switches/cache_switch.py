@@ -92,6 +92,9 @@ class CacheSwitch (Switch):
 
         weights = self._get_weights()
 
+        logging.debug("All dependencies: " + str(all_dependencies))
+        logging.debug("Weights: " + str(weights))
+
         # Heuristic for Budgeted Maximum Coverage Problem
 
         # In each stage we will choose a rule to add the maximizes the total
@@ -102,7 +105,7 @@ class CacheSwitch (Switch):
         while len(cached_rules) < self.hw_switch_size:
             to_add = set()
             weight_to_add = 0
-            ratio = 0
+            ratio = -1
 
             for i in range(len(self.all_rules)):
                 if i not in cached_rules:
@@ -126,7 +129,7 @@ class CacheSwitch (Switch):
                         weight_to_add = possible_weight_to_add
                         ratio = new_ratio
 
-            if ratio == 0:
+            if ratio == -1:
                 break
 
             # add the rules
@@ -147,12 +150,15 @@ class CacheSwitch (Switch):
         algorithm, this algorithm does add new rules to the cache to cover 
         groups of rarely used rules. 
         """
-        logging.info("[cache_switch] Updating cached rules, cover set.")
+        logging.info("[cache_switch] Updating cached rules - cover set.")
 
         dependency_graph, all_dependencies = self._construct_dependency_graph()
         # cost(i) = len(all_dependencies[i])
 
         weights = self._get_weights()
+
+        logging.debug("All dependencies: " + str(all_dependencies))
+        logging.debug("Weights: " + str(weights))
 
         # Cache rules using cover-set algorithm
         cached_rules = set()
@@ -163,7 +169,7 @@ class CacheSwitch (Switch):
             to_add_cached = set()
             to_remove_cover = set()
             to_add_cover = set()
-            weight_to_add = 0
+            weight_to_add = -1
 
             for i in range(len(self.all_rules)):
                 if i not in cached_rules and weights[i] > weight_to_add:
@@ -187,7 +193,7 @@ class CacheSwitch (Switch):
                     to_add_cover = possible_to_add_cover
                     weight_to_add = weights[i]
 
-            if weight_to_add == 0:
+            if weight_to_add == -1:
                 break
 
             cached_rules.update(to_add_cached)
@@ -211,12 +217,15 @@ class CacheSwitch (Switch):
         of the dependent-set algorithm to achieve an implementation that 
         attempts to capture the benefits of both algorithms. 
         """
-        logging.info("[cache_switch] Updating cached rules, mixed set.")
+        logging.info("[cache_switch] Updating cached rules - mixed set.")
 
         dependency_graph, all_dependencies = self._construct_dependency_graph()
         # cost(i) = len(all_dependencies[i])
 
         weights = self._get_weights()
+
+        logging.debug("All dependencies: " + str(all_dependencies))
+        logging.debug("Weights: " + str(weights))
 
         # Cache rules using mixed-set algorithm
         cached_rules = set()
@@ -228,7 +237,7 @@ class CacheSwitch (Switch):
             to_remove_cover = set()
             to_add_cover = set()
             weight_to_add = 0
-            ratio = 0
+            ratio = -1
 
             for i in range(len(self.all_rules)):
 
@@ -290,7 +299,7 @@ class CacheSwitch (Switch):
                         weight_to_add = possible_weight_to_add
                         ratio = new_ratio
 
-            if ratio == 0:
+            if ratio == -1:
                 break
 
             cached_rules.update(to_add_cached)
@@ -308,7 +317,7 @@ class CacheSwitch (Switch):
 
     def _update_cache(self):
         # [TODO] Add ability to use other cache algorithms.
-        self._update_cache_dependent_set()
+        self._update_cache_cover_set()
 
     def packet_in(self, packet: Packet, port: int) -> Action:
         logging.info("[cache_swtich] Cache switch received a packet.")
@@ -316,7 +325,7 @@ class CacheSwitch (Switch):
         packet.in_port = port
 
         # check if the packet matches in the hardware switch
-        action = self.sw_switch.packet_in(packet)
+        action = self.hw_switch.packet_in(packet)
         self.num_packets += 1
 
         # check if we need to go to a software switch

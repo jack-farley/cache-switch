@@ -8,7 +8,7 @@ from packet import Packet
 
 
 def start_logging():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
 
 def main():
