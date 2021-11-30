@@ -1,14 +1,20 @@
+import logging
+from ipaddress import IPv4Network
 from switches.switch import Switch
 from packet import Packet
 from rules.action import ActionType
 
 
 class Network:
+    """
+    Represents a network of hosts, switches, and links.
+    This class also acts as the controller in the SDN model.
+    """
 
     # switches[i] = switch with name i
     switches: map
 
-    # hosts[i] = switch_name, switch_port
+    # hosts[i] = ip_address
     hosts: map
 
     # links[switch_name][switch_port] = dst_name, dst_port
@@ -26,15 +32,23 @@ class Network:
         self.links = map()
         self.packet_queue = []
 
-    def add_switch(self, name: str, switch: Switch):
-        """Add a switch to the network."""
-        self.switches[name] = switch
-        self.links[name] = map()
+        self.start_logging()
 
-    def add_host(self, host_name: str, switch_name: str, switch_port):
+    def start_logging():
+        logging.basicConfig(level=logging.DEBUG)
+
+    def add_switch(self, switch_name: str, switch: Switch):
+        """Add a switch to the network."""
+        self.switches[switch_name] = switch
+        self.links[switch_name] = map()
+
+    def add_host(self, host_name: str, ip_address: IPv4Network):
         """Add a host to the network."""
-        if switch_name in self.switches:
-            self.hosts[host_name] = switch_name, switch_port
+        self.hosts[host_name] = ip_address
+
+    def connect_host(self, host_name: str, switch_name: str, switch_port: int):
+        if host_name in self.hosts and switch_name in self.switches:
+            self.links[host_name] = switch_name, switch_port
             self.links[switch_name][switch_port] = host_name, None
 
     def add_link(self, a: str, a_port: int, b: str, b_port: int):
@@ -46,7 +60,7 @@ class Network:
     def send_packet(self, packet: Packet, host_name: str):
         """Send a packet into the network."""
         if host_name in self.hosts:
-            switch_name, switch_port = self.hosts[host_name]
+            switch_name, switch_port = self.links[host_name]
             self.packet_queue.append(packet, switch_name, switch_port)
 
         while len(self.packet_queue) > 0:
