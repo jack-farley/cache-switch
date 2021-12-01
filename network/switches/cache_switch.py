@@ -1,10 +1,10 @@
 import logging
 from sortedcontainers import SortedKeyList
-from switches.switch import Switch
-from switches.basic_switch import BasicSwitch
-from rules.rule import Rule
-from rules.action import Action, ActionType
-from packet import Packet
+from network.switches.switch import Switch
+from network.switches.basic_switch import BasicSwitch
+from network.rules.rule import Rule
+from network.rules.action import Action, ActionType
+from network.packet import Packet
 
 
 class CacheSwitch (Switch):
@@ -224,8 +224,8 @@ class CacheSwitch (Switch):
 
         weights = self._get_weights()
 
-        logging.debug("All dependencies: " + str(all_dependencies))
-        logging.debug("Weights: " + str(weights))
+        logging.debug("[cache_switch] All dependencies: " + str(all_dependencies))
+        logging.debug("[cache_switch] Weights: " + str(weights))
 
         # Cache rules using mixed-set algorithm
         cached_rules = set()
@@ -317,7 +317,7 @@ class CacheSwitch (Switch):
 
     def _update_cache(self):
         # [TODO] Add ability to use other cache algorithms.
-        self._update_cache_cover_set()
+        self._update_cache_dependent_set()
 
     def packet_in(self, packet: Packet, port: int) -> Action:
         logging.info("[cache_swtich] Cache switch received a packet.")

@@ -1,6 +1,6 @@
-from rules.rule import Rule
-from packet import Packet
-from rules.action import Action
+from network.rules.rule import Rule
+from network.packet import Packet
+from network.rules.action import Action
 
 
 class Switch:

@@ -1,18 +1,19 @@
 import logging
 from ipaddress import IPv4Network, ip_network
-from rules.action import ForwardAction
-from rules.pattern import IPv4DstPattern
-from switches.cache_switch import CacheSwitch
-from rules.rule import Rule
-from packet import Packet
+from network.rules.action import ForwardAction
+from network.rules.pattern import IPv4DstPattern
+from network.switches.cache_switch import CacheSwitch
+from network.rules.rule import Rule
+from network.packet import Packet
+
+from tests.general_test import general_test
 
 
 def start_logging():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
 
-def main():
-    start_logging()
+def basic_switch_test():
 
     logging.info("[Main] Creating cache switch.")
     switch = CacheSwitch(hw_switch_size=10)
@@ -42,6 +43,12 @@ def main():
 
     print("Pakcets: " + str(switch.num_packets))
     print("Misses: " + str(switch.num_misses))
+
+
+def main():
+    start_logging()
+
+    general_test()
 
 
 if __name__ == "__main__":

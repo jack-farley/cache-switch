@@ -1,16 +1,17 @@
-from network import Network
+from network.network import Network
 from ipaddress import IPv4Network, ip_network
-from switches.cache_switch import CacheSwitch
-from rules.rule import Rule
-from rules.action import ForwardAction, DropAction
-from rules.pattern import IPv4DstPattern, InPortPattern
+from network.switches.cache_switch import CacheSwitch
+from network.rules.rule import Rule
+from network.packet import Packet
+from network.rules.action import ForwardAction, DropAction
+from network.rules.pattern import IPv4DstPattern, InPortPattern
 
 
 class TestNetwork (Network):
 
     def __init__(self):
         """Initialize the network and the switches."""
-        super(self)
+        super().__init__()
         self.init_topo(5)
 
     def init_topo(self, cache_size: int):
@@ -78,42 +79,42 @@ class TestNetwork (Network):
         # load balancing rules
 
         # depedent rules
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            11), IPv4DstPattern(ip_network("10.0.2.2/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            3), IPv4DstPattern(ip_network("10.0.2.2/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            4), IPv4DstPattern(ip_network("10.0.2.2/24"))], DropAction, 50)
+        self.switches["s1"].add_rule(Rule(
+            [InPortPattern(11), IPv4DstPattern(ip_network("10.0.2.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            3), IPv4DstPattern(ip_network("10.0.2.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            4), IPv4DstPattern(ip_network("10.0.2.0/24"))], DropAction, 50))
 
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            5), IPv4DstPattern(ip_network("10.0.3.3/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            6), IPv4DstPattern(ip_network("10.0.3.3/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            11), IPv4DstPattern(ip_network("10.0.3.3/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            20), IPv4DstPattern(ip_network("10.0.3.3/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            24), IPv4DstPattern(ip_network("10.0.3.3/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            17), IPv4DstPattern(ip_network("10.0.3.3/24"))], DropAction, 50)
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            5), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            6), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            11), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            20), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            24), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            17), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
 
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            31), IPv4DstPattern(ip_network("10.0.4.4/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            45), IPv4DstPattern(ip_network("10.0.4.4/24"))], DropAction, 50)
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            31), IPv4DstPattern(ip_network("10.0.4.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            45), IPv4DstPattern(ip_network("10.0.4.0/24"))], DropAction, 50))
 
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            51), IPv4DstPattern(ip_network("10.0.5.5/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            61), IPv4DstPattern(ip_network("10.0.5.5/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            112), IPv4DstPattern(ip_network("10.0.5.5/24"))], DropAction, 50)
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            201), IPv4DstPattern(ip_network("10.0.5.5/24"))], DropAction, 50)
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            51), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            61), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            112), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            201), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
 
-        self.switches["s1"].add_rule(Rule[InPortPattern(
-            23), IPv4DstPattern(ip_network("10.0.6.6/24"))], DropAction, 50)
+        self.switches["s1"].add_rule(Rule([InPortPattern(
+            23), IPv4DstPattern(ip_network("10.0.6.0/24"))], DropAction, 50))
 
         # main rules
         self.switches["s1"].add_rule(
@@ -127,10 +128,18 @@ class TestNetwork (Network):
         self.switches["s1"].add_rule(
             Rule([IPv4DstPattern(ip_network("10.0.6.6"))], ForwardAction(6), 10))
 
+    def packet_in(self, packet: Packet, switch_name: str):
+        # drop the packet
+        self.drop_packet(packet)
 
-def main():
-    pass
 
+def general_test():
+    network = TestNetwork()
 
-if __name__ == "__main__":
-    main()
+    network.send_packet("h1", 1, ip_network("10.0.2.2"), 1)
+
+    packets_in, arrived, dropped = network.get_stats()
+
+    print("Packets In: " + str(packets_in))
+    print("Packets Arrived: " + str(arrived))
+    print("Packets Dropped: " + str(dropped))

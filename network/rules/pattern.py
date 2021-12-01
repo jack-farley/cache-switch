@@ -1,5 +1,5 @@
 from ipaddress import IPv4Network
-from packet import Packet
+from network.packet import Packet
 
 
 class Pattern:
@@ -33,7 +33,7 @@ class IPv4SrcPattern (Pattern):
 
     ipv4_src: IPv4Network
 
-    def __init__(self, ipv4_src):
+    def __init__(self, ipv4_src: IPv4Network):
         self.ipv4_src = ipv4_src
 
     def matches(self, packet: Packet) -> bool:
