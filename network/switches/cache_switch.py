@@ -205,7 +205,7 @@ class CacheSwitch (Switch):
         for ind in cached_rules:
             new_cache_rules.add(self.all_rules[ind])
         for ind in cover_rules:
-            cover_rules.add(self.all_rules[ind].create_cover_rule())
+            new_cache_rules.add(self.all_rules[ind].create_cover_rule())
 
         self.hw_switch.set_rules(new_cache_rules)
 
@@ -224,7 +224,8 @@ class CacheSwitch (Switch):
 
         weights = self._get_weights()
 
-        logging.debug("[cache_switch] All dependencies: " + str(all_dependencies))
+        logging.debug("[cache_switch] All dependencies: " +
+                      str(all_dependencies))
         logging.debug("[cache_switch] Weights: " + str(weights))
 
         # Cache rules using mixed-set algorithm
@@ -317,7 +318,7 @@ class CacheSwitch (Switch):
 
     def _update_cache(self):
         # [TODO] Add ability to use other cache algorithms.
-        self._update_cache_dependent_set()
+        self._update_cache_mixed_set()
 
     def packet_in(self, packet: Packet, port: int) -> Action:
         logging.info("[cache_swtich] Cache switch received a packet.")
