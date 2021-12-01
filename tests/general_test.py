@@ -136,10 +136,28 @@ class TestNetwork (Network):
 def general_test():
     network = TestNetwork()
 
-    network.send_packet("h1", 1, ip_network("10.0.2.2"), 1)
+    for i in range(15):
+        for j in range(5):
+            network.send_packet("h1", 1, "h2", 1)
+        for j in range(15):
+            network.send_packet("h1", 1, "h3", 1)
+        for j in range(2):
+            network.send_packet("h1", 1, "h4", 1)
+        for j in range(3):
+            network.send_packet("h1", 1, "h5", 1)
+        for j in range(10):
+            network.send_packet("h1", 1, "h6", 1)
 
     packets_in, arrived, dropped = network.get_stats()
 
     print("Packets In: " + str(packets_in))
     print("Packets Arrived: " + str(arrived))
     print("Packets Dropped: " + str(dropped))
+
+    print()
+
+    packets, hits, misses = network.get_cache_switch_stats("s1")
+
+    print("Packets through s1: " + str(packets))
+    print("Hits: " + str(hits))
+    print("Misses: " + str(misses))

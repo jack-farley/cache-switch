@@ -18,6 +18,7 @@ class CacheSwitch (Switch):
 
     num_packets: int
     num_misses: int
+    num_hits: int
 
     def __init__(self, hw_switch_size: int):
         """Create a new cache switch."""
@@ -32,6 +33,7 @@ class CacheSwitch (Switch):
         self.all_rules = SortedKeyList([], key=lambda r: r.priority)
 
         self.num_packets = 0
+        self.num_hits = 0
         self.num_misses = 0
 
     def _depends_on(self, a: int, b: int) -> bool:
@@ -333,6 +335,11 @@ class CacheSwitch (Switch):
         if action == None or action.type == ActionType.SOFTWARE_SWITCH:
             action = self.sw_switch.packet_in(packet)
             self.num_misses += 1
+        else:
+            self.num_hits += 1
+
+        if self.num_packets % 10 == 0:
+            self._update_cache()
 
         return action
 
@@ -357,3 +364,8 @@ class CacheSwitch (Switch):
 
         # [TODO]
         pass
+
+    def get_cache_stats(self):
+        """Get the number of packets sent through the switch as well as the
+        number of hits and misses."""
+        return self.num_packets, self.num_hits, self.num_misses

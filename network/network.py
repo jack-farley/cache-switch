@@ -64,15 +64,15 @@ class Network:
         """Drop a packet."""
         self.packets_dropped += 1
 
-    def send_packet(self, host_name: str, tcp_sport: int, ipv4_dst: IPv4Network, tcp_dport: int):
+    def send_packet(self, src_host: str, src_port: int, dst_host: str, dst_port: int):
         """Send a packet into the network."""
 
         self.packets_in += 1
 
-        if host_name in self.hosts:
-            packet = Packet(None, self.hosts[host_name],
-                            ipv4_dst, tcp_sport, tcp_dport)
-            switch_name, switch_port = self.links[host_name]
+        if src_host in self.hosts and dst_host in self.hosts:
+            packet = Packet(
+                None, self.hosts[src_host], self.hosts[dst_host], src_port, dst_port)
+            switch_name, switch_port = self.links[src_host]
             self.packet_queue.append((packet, switch_name, switch_port))
         else:
             self.drop_packet
@@ -112,3 +112,7 @@ class Network:
 
     def get_stats(self):
         return self.packets_in, self.packets_arrived, self.packets_dropped
+
+    def get_cache_switch_stats(self, switch_name: str):
+        if switch_name in self.switches:
+            return self.switches[switch_name].get_cache_stats()
