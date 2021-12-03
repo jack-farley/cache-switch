@@ -5,6 +5,7 @@ from network.rules.pattern import IPv4DstPattern
 from network.switches.cache_switch import CacheSwitch
 from network.rules.rule import Rule
 from network.packet import Packet
+from network.switches.cache_algorithm import CacheAlgorithm
 
 from tests.general_test import general_test
 
@@ -48,7 +49,7 @@ def basic_switch_test():
 def main():
     start_logging()
 
-    general_test()
+    general_test(CacheAlgorithm.DEPENDENT_SET)
 
 
 if __name__ == "__main__":

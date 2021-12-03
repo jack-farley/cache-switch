@@ -5,16 +5,17 @@ from network.rules.rule import Rule
 from network.packet import Packet
 from network.rules.action import ForwardAction, DropAction
 from network.rules.pattern import IPv4DstPattern, InPortPattern
+from network.switches.cache_algorithm import CacheAlgorithm
 
 
 class TestNetwork (Network):
 
-    def __init__(self):
+    def __init__(self, cache_algorithm: CacheAlgorithm):
         """Initialize the network and the switches."""
         super().__init__()
-        self.init_topo(15)
+        self.init_topo(15, cache_algorithm)
 
-    def init_topo(self, cache_size: int):
+    def init_topo(self, cache_size: int, cache_algorithm: CacheAlgorithm):
 
         # add the hosts
         self.add_host("h1", ip_network("10.0.1.1"))
@@ -26,17 +27,17 @@ class TestNetwork (Network):
 
         # add the switches
         self.add_switch("s1", CacheSwitch(
-            name="s1", hw_switch_size=cache_size))
+            name="s1", algorithm=cache_algorithm, hw_switch_size=cache_size))
         self.add_switch("s2", CacheSwitch(
-            name="s2", hw_switch_size=cache_size))
+            name="s2", algorithm=cache_algorithm, hw_switch_size=cache_size))
         self.add_switch("s3", CacheSwitch(
-            name="s3", hw_switch_size=cache_size))
+            name="s3", algorithm=cache_algorithm, hw_switch_size=cache_size))
         self.add_switch("s4", CacheSwitch(
-            name="s4", hw_switch_size=cache_size))
+            name="s4", algorithm=cache_algorithm, hw_switch_size=cache_size))
         self.add_switch("s5", CacheSwitch(
-            name="s5", hw_switch_size=cache_size))
+            name="s5", algorithm=cache_algorithm, hw_switch_size=cache_size))
         self.add_switch("s6", CacheSwitch(
-            name="s6", hw_switch_size=cache_size))
+            name="s6", algorithm=cache_algorithm, hw_switch_size=cache_size))
 
         # add the links
         self.add_link("s1", 2, "s2", 1)
@@ -139,8 +140,8 @@ class TestNetwork (Network):
         self.drop_packet(packet)
 
 
-def general_test():
-    network = TestNetwork()
+def general_test(cache_algorithm: CacheAlgorithm):
+    network = TestNetwork(cache_algorithm)
 
     for i in range(10):
         for j in range(5):

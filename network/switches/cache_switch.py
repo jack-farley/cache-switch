@@ -5,11 +5,13 @@ from network.switches.basic_switch import BasicSwitch
 from network.rules.rule import Rule
 from network.rules.action import Action, ActionType
 from network.packet import Packet
+from network.switches.cache_algorithm import CacheAlgorithm
 
 
 class CacheSwitch (Switch):
 
     name: str
+    algorithm: CacheAlgorithm
 
     hw_switch: BasicSwitch
     hw_switch_size: int
@@ -22,12 +24,13 @@ class CacheSwitch (Switch):
     num_misses: int
     num_hits: int
 
-    def __init__(self, name: str, hw_switch_size: int):
+    def __init__(self, name: str, algorithm: CacheAlgorithm, hw_switch_size: int):
         """Create a new cache switch."""
         logging.info(
             f"[cache_switch][{name}] Creating a new cache switch.")
 
         self.name = name
+        self.algorithm = algorithm
 
         self.hw_switch = BasicSwitch()
         self.hw_switch_size = hw_switch_size
@@ -344,7 +347,12 @@ class CacheSwitch (Switch):
     def _update_cache(self):
         logging.info(f"[cache_switch][{self.name}] Updating the cache.")
         # [TODO] Add ability to use other cache algorithms.
-        self._update_cache_cover_set()
+        if self.algorithm == CacheAlgorithm.DEPENDENT_SET:
+            self._update_cache_dependent_set()
+        elif self.algorithm == CacheAlgorithm.COVER_SET:
+            self._update_cache_cover_set()
+        elif self.algorithm == CacheAlgorithm.MIXED_SET:
+            self._update_cache_mixed_set()
 
     def packet_in(self, packet: Packet, port: int) -> Action:
         logging.info(
