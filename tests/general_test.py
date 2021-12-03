@@ -12,7 +12,7 @@ class TestNetwork (Network):
     def __init__(self):
         """Initialize the network and the switches."""
         super().__init__()
-        self.init_topo(5)
+        self.init_topo(15)
 
     def init_topo(self, cache_size: int):
 
@@ -25,12 +25,18 @@ class TestNetwork (Network):
         self.add_host("h6", ip_network("10.0.6.6"))
 
         # add the switches
-        self.add_switch("s1", CacheSwitch(hw_switch_size=cache_size))
-        self.add_switch("s2", CacheSwitch(hw_switch_size=cache_size))
-        self.add_switch("s3", CacheSwitch(hw_switch_size=cache_size))
-        self.add_switch("s4", CacheSwitch(hw_switch_size=cache_size))
-        self.add_switch("s5", CacheSwitch(hw_switch_size=cache_size))
-        self.add_switch("s6", CacheSwitch(hw_switch_size=cache_size))
+        self.add_switch("s1", CacheSwitch(
+            name="s1", hw_switch_size=cache_size))
+        self.add_switch("s2", CacheSwitch(
+            name="s2", hw_switch_size=cache_size))
+        self.add_switch("s3", CacheSwitch(
+            name="s3", hw_switch_size=cache_size))
+        self.add_switch("s4", CacheSwitch(
+            name="s4", hw_switch_size=cache_size))
+        self.add_switch("s5", CacheSwitch(
+            name="s5", hw_switch_size=cache_size))
+        self.add_switch("s6", CacheSwitch(
+            name="s6", hw_switch_size=cache_size))
 
         # add the links
         self.add_link("s1", 2, "s2", 1)
@@ -136,7 +142,7 @@ class TestNetwork (Network):
 def general_test():
     network = TestNetwork()
 
-    for i in range(15):
+    for i in range(10):
         for j in range(5):
             network.send_packet("h1", 1, "h2", 1)
         for j in range(15):

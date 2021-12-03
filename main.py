@@ -10,7 +10,7 @@ from tests.general_test import general_test
 
 
 def start_logging():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.ERROR)
 
 
 def basic_switch_test():

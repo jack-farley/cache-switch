@@ -24,3 +24,6 @@ class Packet:
         self.ipv4_dst = ipv4_dst
         self.tcp_sport = tcp_sport
         self.tcp_dport = tcp_dport
+
+    def __str__(self):
+        return f'[in_port: {self.in_port}, ipv4_src: {str(self.ipv4_src)}, ipv4_dst: {str(self.ipv4_dst)}, tcp_sport: {self.tcp_sport}, tcp_dport: {self.tcp_dport}]'

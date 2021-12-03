@@ -9,6 +9,8 @@ from network.packet import Packet
 
 class CacheSwitch (Switch):
 
+    name: str
+
     hw_switch: BasicSwitch
     hw_switch_size: int
 
@@ -20,9 +22,12 @@ class CacheSwitch (Switch):
     num_misses: int
     num_hits: int
 
-    def __init__(self, hw_switch_size: int):
+    def __init__(self, name: str, hw_switch_size: int):
         """Create a new cache switch."""
-        logging.info("[cache_switch] Creating a new cache switch.")
+        logging.info(
+            f"[cache_switch][{name}] Creating a new cache switch.")
+
+        self.name = name
 
         self.hw_switch = BasicSwitch()
         self.hw_switch_size = hw_switch_size
@@ -49,7 +54,8 @@ class CacheSwitch (Switch):
 
     def _construct_dependency_graph(self):
         """Construct the dependency graph."""
-        logging.info("[cache_switch] Constructing the dependency graph.")
+        logging.info(
+            f"[cache_switch][{self.name}] Constructing the dependency graph.")
 
         # get a list of dependencies
         # dependency_graph[i] is the set of rules that i directly depends on
@@ -73,7 +79,7 @@ class CacheSwitch (Switch):
 
     def _get_weights(self):
         """Get the weights."""
-        logging.info("[cache_switch] Getting weights.")
+        logging.info(f"[cache_switch][{self.name}] Getting weights.")
 
         weights = []
         for rule in self.all_rules:
@@ -87,15 +93,17 @@ class CacheSwitch (Switch):
         algorithm that respects rule depencies but does not create new rules to 
         cover groups of rarely used ones. 
         """
-        logging.info("[cache_switch] Updating cached rules - dependent set.")
+        logging.info(
+            f"[cache_switch][{self.name}] Updating cached rules - dependent set.")
 
         dependency_graph, all_dependencies = self._construct_dependency_graph()
         # cost(i) = len(all_dependencies[i])
 
         weights = self._get_weights()
 
-        logging.debug("All dependencies: " + str(all_dependencies))
-        logging.debug("Weights: " + str(weights))
+        logging.debug(f"[cache_switch][{self.name}] All dependencies: " +
+                      str(all_dependencies))
+        logging.debug(f"[cache_switch][{self.name}] Weights: " + str(weights))
 
         # Heuristic for Budgeted Maximum Coverage Problem
 
@@ -119,14 +127,14 @@ class CacheSwitch (Switch):
                             possible_weight_to_add += weights[j]
 
                     # make sure we haven't exceeded the cost
-                    if (len(cached_rules) + len(to_add) > self.hw_switch_size):
+                    if (len(cached_rules) + len(possible_to_add) > self.hw_switch_size):
                         continue
 
                     # check if this produces the best ratio so far
                     new_ratio = (weight + possible_weight_to_add) / \
                         (len(cached_rules) + len(possible_to_add))
 
-                    if new_ratio > ratio:
+                    if new_ratio > ratio and len(cached_rules) + len(to_add) <= self.hw_switch_size:
                         to_add = possible_to_add
                         weight_to_add = possible_weight_to_add
                         ratio = new_ratio
@@ -139,6 +147,8 @@ class CacheSwitch (Switch):
             weight += weight_to_add
 
         # update the caches
+        logging.debug(
+            f"[cache_switch][{self.name}] New cache rules: " + str(cached_rules))
         new_cache_rules = set()
         for ind in cached_rules:
             new_cache_rules.add(self.all_rules[ind])
@@ -152,15 +162,17 @@ class CacheSwitch (Switch):
         algorithm, this algorithm does add new rules to the cache to cover 
         groups of rarely used rules. 
         """
-        logging.info("[cache_switch] Updating cached rules - cover set.")
+        logging.info(
+            f"[cache_switch][{self.name}] Updating cached rules - cover set.")
 
         dependency_graph, all_dependencies = self._construct_dependency_graph()
         # cost(i) = len(all_dependencies[i])
 
         weights = self._get_weights()
 
-        logging.debug("All dependencies: " + str(all_dependencies))
-        logging.debug("Weights: " + str(weights))
+        logging.debug(f"[cache_switch][{self.name}] All dependencies: " +
+                      str(all_dependencies))
+        logging.debug(f"[cache_switch][{self.name}] Weights: " + str(weights))
 
         # Cache rules using cover-set algorithm
         cached_rules = set()
@@ -203,6 +215,11 @@ class CacheSwitch (Switch):
             cover_rules.update(to_add_cover)
             weight += weight_to_add
 
+        logging.debug(
+            f"[cache_switch][{self.name}] New cache rules: " + str(cached_rules))
+        logging.debug(
+            f"[cache_switch][{self.name}] New cover rules: " + str(cover_rules))
+
         new_cache_rules = set()
         for ind in cached_rules:
             new_cache_rules.add(self.all_rules[ind])
@@ -219,16 +236,17 @@ class CacheSwitch (Switch):
         of the dependent-set algorithm to achieve an implementation that 
         attempts to capture the benefits of both algorithms. 
         """
-        logging.info("[cache_switch] Updating cached rules - mixed set.")
+        logging.info(
+            f"[cache_switch][{self.name}] Updating cached rules - mixed set.")
 
         dependency_graph, all_dependencies = self._construct_dependency_graph()
         # cost(i) = len(all_dependencies[i])
 
         weights = self._get_weights()
 
-        logging.debug("[cache_switch] All dependencies: " +
+        logging.debug(f"[cache_switch][{self.name}] All dependencies: " +
                       str(all_dependencies))
-        logging.debug("[cache_switch] Weights: " + str(weights))
+        logging.debug(f"[cache_switch][{self.name}] Weights: " + str(weights))
 
         # Cache rules using mixed-set algorithm
         cached_rules = set()
@@ -310,6 +328,11 @@ class CacheSwitch (Switch):
             cover_rules.update(to_add_cover)
             weight += weight_to_add
 
+        logging.debug(
+            f"[cache_switch][{self.name}] New cache rules: " + str(cached_rules))
+        logging.debug(
+            f"[cache_switch][{self.name}] New cover rules: " + str(cover_rules))
+
         new_cache_rules = set()
         for ind in cached_rules:
             new_cache_rules.add(self.all_rules[ind])
@@ -319,11 +342,13 @@ class CacheSwitch (Switch):
         self.hw_switch.set_rules(new_cache_rules)
 
     def _update_cache(self):
+        logging.info(f"[cache_switch][{self.name}] Updating the cache.")
         # [TODO] Add ability to use other cache algorithms.
-        self._update_cache_mixed_set()
+        self._update_cache_cover_set()
 
     def packet_in(self, packet: Packet, port: int) -> Action:
-        logging.info("[cache_swtich] Cache switch received a packet.")
+        logging.info(
+            f"[cache_switch][{self.name}] Cache switch received a packet - " + str(packet))
 
         packet.in_port = port
 
@@ -344,7 +369,8 @@ class CacheSwitch (Switch):
         return action
 
     def add_rule(self, rule: Rule):
-        logging.info("[cache_switch] Adding a rule to the cache_switch.")
+        logging.info(
+            f"[cache_switch][{self.name}] Adding a rule to the cache_switch.")
 
         self.all_rules.add(rule)
         self.sw_switch.add_rule(rule)
@@ -352,7 +378,8 @@ class CacheSwitch (Switch):
         self._update_cache()
 
     def remove_rule(self, rule: Rule):
-        logging.info("[cache_switch] Removing a rule from the cache_switch.")
+        logging.info(
+            f"[cache_switch][{self.name}] Removing a rule from the cache_switch.")
 
         self.all_rules.add(rule)
         self.sw_switch.remove_rule(rule)
@@ -360,7 +387,8 @@ class CacheSwitch (Switch):
         self._update_cache()
 
     def set_rules(self, rules: set):
-        logging.info("[cache_switch] Setting the rules for the cache switch.")
+        logging.info(
+            f"[cache_switch][{self.name}] Setting the rules for the cache switch.")
 
         # [TODO]
         pass
