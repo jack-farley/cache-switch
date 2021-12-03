@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class CacheAlgorithm(Enum):
-    DEPENDENT_SET = 0
-    COVER_SET = 1
-    MIXED_SET = 2
+    DEPENDENT_SET = "Dependent Set"
+    COVER_SET = "Cover Set"
+    MIXED_SET = "Mixed Set"

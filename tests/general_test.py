@@ -157,6 +157,8 @@ def general_test(cache_algorithm: CacheAlgorithm):
 
     packets_in, arrived, dropped = network.get_stats()
 
+    print()
+
     print("Packets In: " + str(packets_in))
     print("Packets Arrived: " + str(arrived))
     print("Packets Dropped: " + str(dropped))
@@ -165,6 +167,9 @@ def general_test(cache_algorithm: CacheAlgorithm):
 
     packets, hits, misses = network.get_cache_switch_stats("s1")
 
+    print("Cache Algorithm: " + cache_algorithm.value)
     print("Packets through s1: " + str(packets))
     print("Hits: " + str(hits))
     print("Misses: " + str(misses))
+
+    print()
