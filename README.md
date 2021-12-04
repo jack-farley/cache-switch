@@ -1,6 +1,6 @@
 # CS 5114 Project - CacheFlow Implementation
 
-In this project, I implemented the CacheFlow system described by Katta et. al. in their 2014 paper, "Infinite CacheFlow in software-defined networks." The paper describes a system that creates an OpenFlow compliant networking switch that can accomodate an unlimited number of rules. To do this, the switch caches commonly used rules in a hardware switch and stores the rest of the rules in one or more software switches.
+In this project, I implemented the CacheFlow system described by Katta et. al. in their 2014 paper, "Infinite CacheFlow in software-defined networks" (https://dl.acm.org/doi/10.1145/2620728.2620734). The paper describes a system that creates an OpenFlow compliant networking switch that can accomodate an unlimited number of rules. To do this, the switch caches commonly used rules in a hardware switch and stores the rest of the rules in one or more software switches.
 
 The paper describes three algorithms for caching rules - the dependent set algorithm, the cover set algorithm, and the mixed set algorithm - all of which are implemented in this project and can be found in switches/cache_switch.py. I have constructed a mock network environment to test these algorithms in, which is stored in the network module.
 
