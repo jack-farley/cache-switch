@@ -1,6 +1,6 @@
 from enum import Enum
 
-from network.rules.action import Action, ActionType, SoftwareSwitchAction
+from rules.action import Action, ActionType, SoftwareSwitchAction
 from network.packet import Packet
 
 

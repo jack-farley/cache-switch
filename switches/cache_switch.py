@@ -1,11 +1,11 @@
 import logging
 from sortedcontainers import SortedKeyList
-from network.switches.switch import Switch
-from network.switches.basic_switch import BasicSwitch
-from network.rules.rule import Rule
-from network.rules.action import Action, ActionType
+from switches.switch import Switch
+from switches.basic_switch import BasicSwitch
+from rules.rule import Rule
+from rules.action import Action, ActionType
 from network.packet import Packet
-from network.switches.cache_algorithm import CacheAlgorithm
+from switches.cache_algorithm import CacheAlgorithm
 
 
 class CacheSwitch (Switch):

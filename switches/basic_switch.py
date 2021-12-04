@@ -1,8 +1,8 @@
 from sortedcontainers import SortedKeyList
-from network.rules.rule import Rule
+from rules.rule import Rule
 from network.packet import Packet
-from network.rules.action import Action
-from network.switches.switch import Switch
+from rules.action import Action
+from switches.switch import Switch
 
 
 class BasicSwitch (Switch):

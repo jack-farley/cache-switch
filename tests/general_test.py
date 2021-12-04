@@ -1,11 +1,11 @@
 from network.network import Network
 from ipaddress import IPv4Network, ip_network
-from network.switches.cache_switch import CacheSwitch
-from network.rules.rule import Rule
+from switches.cache_switch import CacheSwitch
+from rules.rule import Rule
 from network.packet import Packet
-from network.rules.action import ForwardAction, DropAction
-from network.rules.pattern import IPv4DstPattern, InPortPattern
-from network.switches.cache_algorithm import CacheAlgorithm
+from rules.action import ForwardAction, DropAction
+from rules.pattern import IPv4DstPattern, InPortPattern
+from switches.cache_algorithm import CacheAlgorithm
 
 
 class TestNetwork (Network):

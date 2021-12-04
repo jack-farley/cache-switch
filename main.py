@@ -1,11 +1,11 @@
 import logging
 from ipaddress import IPv4Network, ip_network
-from network.rules.action import ForwardAction
-from network.rules.pattern import IPv4DstPattern
-from network.switches.cache_switch import CacheSwitch
-from network.rules.rule import Rule
+from rules.action import ForwardAction
+from rules.pattern import IPv4DstPattern
+from switches.cache_switch import CacheSwitch
+from rules.rule import Rule
 from network.packet import Packet
-from network.switches.cache_algorithm import CacheAlgorithm
+from switches.cache_algorithm import CacheAlgorithm
 
 from tests.general_test import general_test
 

@@ -1,8 +1,8 @@
 import logging
 from ipaddress import IPv4Network
-from network.switches.switch import Switch
+from switches.switch import Switch
 from network.packet import Packet
-from network.rules.action import ActionType
+from rules.action import ActionType
 
 
 class Network:
