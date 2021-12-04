@@ -93,6 +93,7 @@ class TestNetwork (Network):
         self.switches["s1"].add_rule(Rule([InPortPattern(
             4), IPv4DstPattern(ip_network("10.0.2.0/24"))], DropAction, 50))
 
+        # s3 dependent rules
         self.switches["s1"].add_rule(Rule([InPortPattern(
             5), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
         self.switches["s1"].add_rule(Rule([InPortPattern(
@@ -106,20 +107,23 @@ class TestNetwork (Network):
         self.switches["s1"].add_rule(Rule([InPortPattern(
             17), IPv4DstPattern(ip_network("10.0.3.0/24"))], DropAction, 50))
 
+        # s4 dependent rules
         self.switches["s1"].add_rule(Rule([InPortPattern(
             31), IPv4DstPattern(ip_network("10.0.4.0/24"))], DropAction, 50))
         self.switches["s1"].add_rule(Rule([InPortPattern(
             45), IPv4DstPattern(ip_network("10.0.4.0/24"))], DropAction, 50))
 
+        # s5 dependent rules
         self.switches["s1"].add_rule(Rule([InPortPattern(
             51), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
         self.switches["s1"].add_rule(Rule([InPortPattern(
-            61), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
+            51), IPv4DstPattern(ip_network("10.0.5.7"))], DropAction, 150))
         self.switches["s1"].add_rule(Rule([InPortPattern(
-            112), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
+            51), IPv4DstPattern(ip_network("10.0.5.7"))], DropAction, 150))
         self.switches["s1"].add_rule(Rule([InPortPattern(
-            201), IPv4DstPattern(ip_network("10.0.5.0/24"))], DropAction, 50))
+            51), IPv4DstPattern(ip_network("10.0.5.7"))], DropAction, 150))
 
+        # s6 dependent rules
         self.switches["s1"].add_rule(Rule([InPortPattern(
             23), IPv4DstPattern(ip_network("10.0.6.0/24"))], DropAction, 50))
 
@@ -150,9 +154,9 @@ def general_test(cache_algorithm: CacheAlgorithm):
             network.send_packet("h1", 1, "h3", 1)
         for j in range(2):
             network.send_packet("h1", 1, "h4", 1)
-        for j in range(3):
-            network.send_packet("h1", 1, "h5", 1)
         for j in range(10):
+            network.send_packet("h1", 1, "h5", 1)
+        for j in range(3):
             network.send_packet("h1", 1, "h6", 1)
 
     packets_in, arrived, dropped = network.get_stats()
@@ -171,5 +175,6 @@ def general_test(cache_algorithm: CacheAlgorithm):
     print("Packets through s1: " + str(packets))
     print("Hits: " + str(hits))
     print("Misses: " + str(misses))
+    print("Hit Rate: " + str(hits / packets))
 
     print()

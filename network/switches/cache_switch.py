@@ -104,6 +104,8 @@ class CacheSwitch (Switch):
 
         weights = self._get_weights()
 
+        logging.debug(f"[cache_switch][{self.name}] Dependency graph: " +
+                      str(dependency_graph))
         logging.debug(f"[cache_switch][{self.name}] All dependencies: " +
                       str(all_dependencies))
         logging.debug(f"[cache_switch][{self.name}] Weights: " + str(weights))
@@ -173,6 +175,8 @@ class CacheSwitch (Switch):
 
         weights = self._get_weights()
 
+        logging.debug(f"[cache_switch][{self.name}] Dependency graph: " +
+                      str(dependency_graph))
         logging.debug(f"[cache_switch][{self.name}] All dependencies: " +
                       str(all_dependencies))
         logging.debug(f"[cache_switch][{self.name}] Weights: " + str(weights))
@@ -247,6 +251,8 @@ class CacheSwitch (Switch):
 
         weights = self._get_weights()
 
+        logging.debug(f"[cache_switch][{self.name}] Dependency graph: " +
+                      str(dependency_graph))
         logging.debug(f"[cache_switch][{self.name}] All dependencies: " +
                       str(all_dependencies))
         logging.debug(f"[cache_switch][{self.name}] Weights: " + str(weights))
@@ -340,7 +346,7 @@ class CacheSwitch (Switch):
         for ind in cached_rules:
             new_cache_rules.add(self.all_rules[ind])
         for ind in cover_rules:
-            cover_rules.add(self.all_rules[ind].create_cover_rule())
+            new_cache_rules.add(self.all_rules[ind].create_cover_rule())
 
         self.hw_switch.set_rules(new_cache_rules)
 

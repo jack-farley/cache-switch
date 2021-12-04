@@ -50,6 +50,8 @@ def main():
     start_logging()
 
     general_test(CacheAlgorithm.DEPENDENT_SET)
+    general_test(CacheAlgorithm.COVER_SET)
+    general_test(CacheAlgorithm.MIXED_SET)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,6 @@ The paper describes three algorithms for caching rules - the dependent set algor
 
 To run the code, simply run 'python main.py' and a general test will be executed. The algorithm used in this test can be adjusted in main.py.
 
-# Building
+## Building
 
-# Demo
+## Demo
