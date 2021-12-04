@@ -163,6 +163,10 @@ def general_test(cache_algorithm: CacheAlgorithm):
 
     print()
 
+    print("Running General Test - Cache Algorithm: " + str(cache_algorithm.value))
+
+    print()
+
     print("Packets In: " + str(packets_in))
     print("Packets Arrived: " + str(arrived))
     print("Packets Dropped: " + str(dropped))
@@ -171,10 +175,10 @@ def general_test(cache_algorithm: CacheAlgorithm):
 
     packets, hits, misses = network.get_cache_switch_stats("s1")
 
-    print("Cache Algorithm: " + cache_algorithm.value)
     print("Packets through s1: " + str(packets))
     print("Hits: " + str(hits))
     print("Misses: " + str(misses))
     print("Hit Rate: " + str(hits / packets))
 
+    print()
     print()
