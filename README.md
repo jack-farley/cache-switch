@@ -8,8 +8,8 @@ To run the code, simply run 'python main.py' and a general test will be executed
 
 ## Building
 
-To set up the environment, just install all of the modules in requirements.txt using 'pip install -r requirements.txt'.
+To set up the environment, just install all of the modules in requirements.txt using `pip install -r requirements.txt`.
 
 ## Demo
 
-To run the demo, run main.py using 'python main.py'. This will run the general test (found in tests/general_test.py) that I developed to showcase the functionality of this system. For each of the three caching algorithms, the test constructs a mock network and installs several rules on the switches in that network. Then, the test sends a batch of packets into the network and prints out the results, including the cache statistics for the main switch in the network.
+To run the demo, run main.py using `python main.py`. This will run the general test (found in `tests/general_test.py`) that I developed to showcase the functionality of this system. For each of the three caching algorithms, the test constructs a mock network and installs several rules on the switches in that network. Then, the test sends a batch of packets into the network and prints out the results, including the cache statistics for the main switch in the network.
